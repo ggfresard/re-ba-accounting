@@ -1,0 +1,51 @@
+{
+  "name": "re-ba-accounting",
+  "version": "1.0.0",
+  "description": "re-ba-accounting",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development ./front/src/index.tsx --output-path ./front/static/front/ -w",
+    "build": "webpack --mode production ./front/src/index.tsx --output-path ./front/static/front/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggfresard/re-ba-accounting.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ggfresard/re-ba-accounting/issues"
+  },
+  "homepage": "https://github.com/ggfresard/re-ba-accounting#readme",
+  "dependencies": {
+    "@babel/core": "^7.12.7",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@babel/runtime": "^7.12.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/urijs": "^1.19.13",
+    "axios": "^0.21.0",
+    "babel-loader": "^8.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "core-js": "^3.7.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "regenerator-runtime": "^0.13.7",
+    "ts-loader": "^8.0.11",
+    "urijs": "^1.19.2",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "dotenv": "^8.2.0"
+  }
+}
