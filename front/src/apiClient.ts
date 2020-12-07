@@ -1,8 +1,9 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from "axios"
+import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios"
 import URI from "urijs"
 import { Endpoints } from './types/Endpoints'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import { getCookie } from './utils/getCookie'
 
 const BASE_URL = process.env.REACT_APP_API_URL || 'api/'
 const SESSION_TOKEN_NAME = process.env.SESSION_TOKEN_NAME || "auth-token"
@@ -15,24 +16,36 @@ type ApiResponse = {
   success: boolean
   error?: Error
   data?: any
+  status?: number
 }
 
 export enum ReqTypes {
   post = "post",
   patch = "patch",
   delete = "delete",
-  get = "get"
+  get = "get",
+  put = "put"
 }
 
+
+interface Options {
+  body?: Object | null; queryParams?: Object; config?: AxiosRequestConfig;
+  extraRoutes?: string[]
+}
 axios.interceptors.request.use(
   function (config) {
-    const token = sessionStorage.getItem(SESSION_TOKEN_NAME)
+    const token = localStorage.getItem('token')
     if (token)
       config.headers = {
         ...config.headers,
-        [API_TOKEN_NAME]: token
+        ['Authorization']: `Token ${token}`
       }
     if (!config.timeout) config.timeout = TIMEOUT_MILLISECONDS
+    config.headers = {
+      ...config.headers,
+      'Content-Type': 'application/json',
+      'X-CSRFToken': document.getElementsByName('csrfmiddlewaretoken')[0].value
+    }
     return config
   },
   function (error) {
@@ -48,7 +61,7 @@ axios.interceptors.response.use(
   },
   function (error) {
     console.log("API RESPONSE ERROR")
-    const errorData = error.response?.data || error
+    const errorData = { error: typeof error.response.data === 'string' ? error.response.data : Object.keys(error.response.data).reduce((acc, key) => acc + `${key}: ${error.response.data[key]}\n`, ''), status: error.response.status }
     console.error(errorData)
     return Promise.reject(errorData)
   }
@@ -57,9 +70,13 @@ axios.interceptors.response.use(
 const apiRequest = async (
   endpoint: Endpoints,
   type: ReqTypes,
-  options?: { body?: Object; queryParams?: Object; config?: AxiosRequestConfig }
+  options?: Options
 ): Promise<ApiResponse> => {
-  const url = new URI(BASE_URL + endpoint)
+  var extra = ''
+  if (options?.extraRoutes?.length) {
+    extra += options.extraRoutes.reduce((acc, curr) => acc + `${curr}/`, "")
+  }
+  const url = new URI(BASE_URL + endpoint + extra)
   if (options?.queryParams) url.addSearch(options.queryParams)
   var response: AxiosResponse<any> | undefined
   try {
@@ -87,16 +104,25 @@ const apiRequest = async (
           options?.config
         )
         break
+      case ReqTypes.put:
+        response = await axios.put(
+          url.toString(),
+          { ...options?.body },
+          options?.config
+        )
+        break
     }
     return {
       success: true,
       data: response?.data
     }
   } catch (e) {
+    console.log(e)
     return {
       success: false,
       error: e,
-      data: response ? response.data : "No connection"
+      data: e ? e.error : "No connection",
+      status: e.status
     }
   }
 }
@@ -104,36 +130,26 @@ const apiRequest = async (
 const apiClient = {
   post: async (
     endpoint: Endpoints,
-    options?: {
-      body?: Object
-      queryParams?: Object
-      config?: AxiosRequestConfig
-    }
-  ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.post, options),
+    options?: Options
+  ): Promise<ApiResponse> => {
+    return apiRequest(endpoint, ReqTypes.post, options)
+  },
   delete: async (
     endpoint: Endpoints,
-    options?: {
-      body?: Object
-      queryParams?: Object
-      config?: AxiosRequestConfig
-    }
+    options?: Options
   ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.delete, options),
   get: async (
     endpoint: Endpoints,
-    options?: {
-      body?: Object
-      queryParams?: Object
-      config?: AxiosRequestConfig
-    }
+    options?: Options
   ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.get, options),
   patch: async (
     endpoint: Endpoints,
-    options?: {
-      body?: Object
-      queryParams?: Object
-      config?: AxiosRequestConfig
-    }
-  ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.patch, options)
+    options?: Options
+  ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.patch, options),
+  put: async (
+    endpoint: Endpoints,
+    options?: Options
+  ): Promise<ApiResponse> => apiRequest(endpoint, ReqTypes.put, options)
 }
 
 export default apiClient

@@ -1,0 +1,3 @@
+interface Error {
+    msg: string
+}

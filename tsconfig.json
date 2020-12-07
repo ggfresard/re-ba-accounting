@@ -1,5 +1,7 @@
 {
     "compilerOptions":{
-        "sourceMap": true
+        "sourceMap": true,
+        "typeRoots": ["./front/src/types"],
+        "rootDir": "./front/src"
     }
 }

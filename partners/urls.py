@@ -1,9 +1,10 @@
 from rest_framework import urlpatterns
 from partners.serializers import PartnerSerializer
 from rest_framework import routers
-from .api import PartnerViewSet
+from .api import ExpenseViewSet, PartnerViewSet
 
 router = routers.DefaultRouter()
-router.register('api/partners', PartnerViewSet, 'partners')
+router.register('partners', PartnerViewSet, 'partners')
+router.register('expenses', ExpenseViewSet, 'expenses')
 
 urlpatterns = router.urls

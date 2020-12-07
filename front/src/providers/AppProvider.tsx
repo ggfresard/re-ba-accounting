@@ -1,10 +1,24 @@
 import React, { Fragment } from 'react'
-import { PartnerProvider } from './index'
+import AuthProvider from './AuthProvider'
+import {
+  PartnerProvider,
+  ErrorProvider,
+  ProjectProvider,
+  ExpenseProvider
+} from './index'
 
 const AppProviders: React.FC = ({ children }) => {
   return (
     <Fragment>
-      <PartnerProvider>{children}</PartnerProvider>
+      <ErrorProvider>
+        <AuthProvider>
+          <PartnerProvider>
+            <ProjectProvider>
+              <ExpenseProvider>{children}</ExpenseProvider>
+            </ProjectProvider>
+          </PartnerProvider>
+        </AuthProvider>
+      </ErrorProvider>
     </Fragment>
   )
 }

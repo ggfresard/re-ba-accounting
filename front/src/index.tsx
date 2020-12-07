@@ -1,22 +1,14 @@
 import ReactDom from 'react-dom'
-import { SideBar } from './components/SideBar'
-import React, { Component } from 'react'
+import React from 'react'
 import { AppProvider } from './providers'
-import { Partners } from './components/Partners'
+import AppRouter from './components/AppRouter'
 
-export default class App extends Component {
-  render() {
-    return (
-      <AppProvider>
-        <div className="wrapper">
-          <SideBar></SideBar>
-          <div className="content-wrapper">
-            <Partners></Partners>
-          </div>
-        </div>
-      </AppProvider>
-    )
-  }
+export const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppRouter />
+    </AppProvider>
+  )
 }
 
-ReactDom.render(<App></App>, document.getElementById('root'))
+ReactDom.render(<App />, document.getElementById('root'))

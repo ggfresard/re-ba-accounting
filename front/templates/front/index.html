@@ -7,8 +7,14 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'front/AdminLTE/dist/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'front/AdminLTE/plugins/fontawesome-free/css/all.min.css' %}">
+    <style> 
+        .wrapper{
+            min-height: 100vh;
+        }
+    </style>
 </head>
-<body class="">
+<body class="sidebar-mini" style="background-color: F4F6F9;" >
+    {% csrf_token %}
     <div id="root"></div>
     {% load static %}
     <script src="{% static "front/bundle.js" %}"></script>

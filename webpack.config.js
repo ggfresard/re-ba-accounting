@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const dotenv = require('dotenv')
+const path = require('path')
 
 module.exports = {
   module: {
@@ -18,6 +19,10 @@ module.exports = {
             plugins: ['@babel/plugin-transform-runtime']
           }
         }
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -27,9 +32,13 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['.js', '.ts', '.tsx']
+    extensions: ['.js', '.ts', '.tsx'],
+    alias: {
+      react: path.resolve('./node_modules/react')
+    }
   },
   output: {
     filename: 'bundle.js'
-  }
+  },
+  devtool: 'source-map'
 }

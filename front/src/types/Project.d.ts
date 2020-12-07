@@ -1,7 +1,9 @@
-import { Interface } from "readline";
 
 interface Project {
+    id?: number,
+    client: string
     name: string,
-    participation: { partner: Partner, percentafe: number }[]
-    expenses: { partner: Partner, amount: number }
+    total_amount: number
+    participants: { partner: number, participation: number }[]
+    flows?: Flow[]
 }

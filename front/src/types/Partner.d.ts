@@ -1,4 +1,6 @@
 interface Partner {
     id: number,
-    name: string
+    name: string,
+    last_name,
+    rut: string
 }
