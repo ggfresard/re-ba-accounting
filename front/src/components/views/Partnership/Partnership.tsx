@@ -178,7 +178,7 @@ export const Partnership = () => {
                   <div className="card-header">
                     <div className="d-flex justify-content-between align-items-center">
                       <h3>Gastos variables</h3>
-                      <h4 className="text-danger text-bold">{`${nonVariableExpenses
+                      <h4 className="text-danger text-bold">{`${variableExpenses
                         .reduce<number>((acc, exp) => acc + exp.amount, 0)
                         .toLocaleString('en-cl', {
                           style: 'currency',

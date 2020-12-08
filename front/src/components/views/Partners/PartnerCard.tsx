@@ -97,12 +97,28 @@ export const PartnerCard: React.FC<Props> = ({
       }`}
       key={partner.id}
     >
-      <div className="card-header">
-        <div className="card-title">
-          {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
+      <a
+        data-toggle="collapse"
+        href={`#partner-plot-${partner.id}`}
+        role="button"
+        aria-expanded="false"
+        aria-controls={`partner-plot-${partner.id}`}
+        style={{
+          textDecoration: 'inherit',
+          color: 'inherit'
+        }}
+      >
+        <div
+          className="card-header"
+          style={{ cursor: 'pointer', transition: 'all 1' }}
+        >
+          <div className="card-title">
+            {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
+          </div>
         </div>
-      </div>
-      <div className="card-body">
+      </a>
+
+      <div className="card-body collapse" id={`partner-plot-${partner.id}`}>
         <canvas id={`canvas-${partner.id}`}></canvas>
       </div>
       <div className="card-footer">
