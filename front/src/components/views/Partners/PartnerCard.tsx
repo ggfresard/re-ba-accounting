@@ -20,8 +20,6 @@ export const PartnerCard: React.FC<Props> = ({
 }) => {
   const { projects } = useContext(ProjectContext)
   const { expenses } = useContext(ExpenseContext)
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D>()
-  const [datas, setData] = useState([] as number[])
 
   useEffect(() => {
     const init = async () => {
@@ -83,6 +81,7 @@ export const PartnerCard: React.FC<Props> = ({
           )
         })
         .reduce<number>((acc, exp) => acc + exp.amount, 0)
+      console.log(month, year, utility, expense)
       data.push(utility - expense)
       labels.push(months[month - 1])
     }
