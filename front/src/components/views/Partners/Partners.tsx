@@ -88,6 +88,7 @@ export const Partners = () => {
                         }}
                         cardClasses={['card-success']}
                         key={partner.id}
+                        partnershipPartner
                       ></PartnerCard>
                     ))}
                   {partners.length
@@ -105,6 +106,7 @@ export const Partners = () => {
                             }}
                             cardClasses={['card-primary']}
                             key={partner.id}
+                            partnershipPartner={false}
                           ></PartnerCard>
                         ))
                     : 'No hay datos'}

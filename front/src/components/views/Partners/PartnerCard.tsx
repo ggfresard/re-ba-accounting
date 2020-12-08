@@ -1,25 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Chart } from 'chart.js'
-import {
-  ExpenseContext,
-  PartnerContext,
-  ProjectContext
-} from '../../../providers'
+import { ExpenseContext, ProjectContext } from '../../../providers'
 import { months } from '../../../constants'
+import { data } from 'jquery'
 
 interface Props {
   partner: Partner
   editClick: () => void
   cardClasses?: string[]
+  partnershipPartner: boolean
 }
 
 export const PartnerCard: React.FC<Props> = ({
   partner,
   editClick,
-  cardClasses
+  cardClasses,
+  partnershipPartner
 }) => {
   const { projects } = useContext(ProjectContext)
   const { expenses } = useContext(ExpenseContext)
+  const [plotData, setPlotData] = useState<number[]>([])
 
   useEffect(() => {
     const init = async () => {
@@ -59,15 +59,24 @@ export const PartnerCard: React.FC<Props> = ({
                       flowDate[1] === month.toString()
                     )
                   })
-                  .reduce<number>(
-                    (acc, flow) =>
-                      acc + flow.amount > 0
+                  .reduce<number>((acc, flow) => {
+                    console.log(flow)
+                    console.log(
+                      flow.amount > 0
                         ? flow.amount
                         : flow.confirmed
                         ? flow.amount
-                        : 0,
-                    0
-                  )
+                        : 0
+                    )
+                    return (
+                      acc +
+                      (flow.amount > 0
+                        ? flow.amount
+                        : flow.confirmed
+                        ? flow.amount
+                        : 0)
+                    )
+                  }, 0)
               : 0) *
               (project.participants.find((p) => p.partner === partner.id) as {
                 partner: number
@@ -86,10 +95,10 @@ export const PartnerCard: React.FC<Props> = ({
           )
         })
         .reduce<number>((acc, exp) => acc + exp.amount, 0)
-      console.log(month, year, utility)
       data.push(utility - expense)
       labels.push(months[month - 1])
     }
+    setPlotData(data)
     if (canvasContext) {
       new Chart(canvasContext, {
         type: 'line',
@@ -171,6 +180,32 @@ export const PartnerCard: React.FC<Props> = ({
       <div className="card-body collapse" id={`partner-plot-${partner.id}`}>
         <canvas id={`canvas-${partner.id}`}></canvas>
       </div>
+      {!partnershipPartner && !!plotData.length && (
+        <div className="card-body">
+          <div className="row justify-content-end">
+            <h5>
+              <span className="mr-2">{`Total a pagar  `}</span>
+              <span
+                className={
+                  plotData[plotData.length - 2] > 0
+                    ? 'text-success'
+                    : 'text-danger'
+                }
+              >
+                <i
+                  className={`mr-1 fa fa-arrow-${
+                    plotData[plotData.length - 2] > 0 ? 'up' : 'down'
+                  }`}
+                ></i>
+                {plotData[plotData.length - 2].toLocaleString('en-cl', {
+                  style: 'currency',
+                  currency: 'CLP'
+                })}
+              </span>
+            </h5>
+          </div>
+        </div>
+      )}
       <div className="card-footer">
         <button
           type="button"
