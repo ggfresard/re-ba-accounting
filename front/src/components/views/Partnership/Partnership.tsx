@@ -21,6 +21,7 @@ export const Partnership = () => {
   const onClose = () => {
     fetchExpenses()
   }
+
   useEffect(() => {
     fetchPartners()
     const date = new Date()
