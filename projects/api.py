@@ -20,6 +20,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class FlowViewSet(viewsets.ModelViewSet):
     serializer_class = FlowSerializer
 
+    def get_queryset(self):
+        queryset = Flow.objects.filter(project__owner=self.request.user)
+        return queryset
+
 
 class FlowConfirmViewSet(viewsets.ViewSet):
     serializer_class = FlowConfirmSerializer
