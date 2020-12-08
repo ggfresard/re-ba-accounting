@@ -60,7 +60,12 @@ export const PartnerCard: React.FC<Props> = ({
                     )
                   })
                   .reduce<number>(
-                    (acc, flow) => acc + (flow.confirmed ? flow.amount : 0),
+                    (acc, flow) =>
+                      acc + flow.amount > 0
+                        ? flow.amount
+                        : flow.confirmed
+                        ? flow.amount
+                        : 0,
                     0
                   )
               : 0) *
