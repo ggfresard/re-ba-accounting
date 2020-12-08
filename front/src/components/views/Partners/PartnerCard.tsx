@@ -81,7 +81,7 @@ export const PartnerCard: React.FC<Props> = ({
           )
         })
         .reduce<number>((acc, exp) => acc + exp.amount, 0)
-      console.log(month, year, utility, expense)
+      console.log(month, year, utility)
       data.push(utility - expense)
       labels.push(months[month - 1])
     }
