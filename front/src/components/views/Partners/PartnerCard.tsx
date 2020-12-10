@@ -38,7 +38,7 @@ export const PartnerCard: React.FC<Props> = ({
     const data = []
     const labels = []
 
-    if (partnershipPartner) {
+    if (true) {
       const utility = projects
         .filter((project) =>
           project.participants.some(
@@ -206,7 +206,6 @@ export const PartnerCard: React.FC<Props> = ({
             <div className="card-title">
               {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
             </div>
-            {partnershipPartner && (
               <h5>
                 <span
                   className={
@@ -224,7 +223,7 @@ export const PartnerCard: React.FC<Props> = ({
                   })}
                 </span>
               </h5>
-            )}
+            
           </div>
         </div>
       </a>
