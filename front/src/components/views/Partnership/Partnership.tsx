@@ -5,6 +5,7 @@ import { ExpenseContext, PartnerContext } from '../../../providers'
 import { useForm } from '../../../hooks'
 import { Modal } from 'reactstrap'
 import { ExpenseForm } from './ExpenseForm'
+import { ExpenseDeleteForm } from './ExpenseDeleteForm'
 
 export const Partnership = () => {
   const { partner, fetchPartners } = useContext(PartnerContext)
@@ -15,6 +16,7 @@ export const Partnership = () => {
     month: ''
   })
   const [showModalExpenseForm, setShowModalExpenseForm] = useState(false)
+  const [showDeleteExpenseModal, setShowDeleteExpenseModal] = useState(false)
   const [targetExpense, setTargetExpense] = useState<Expense>()
   const [isVariable, setIsVariable] = useState(false)
 
@@ -45,6 +47,24 @@ export const Partnership = () => {
 
   return (
     <Fragment>
+      <Modal
+        isOpen={showDeleteExpenseModal}
+        onClosed={onClose}
+        backdrop={true}
+        toggle={() => {
+          setShowDeleteExpenseModal(!showDeleteExpenseModal)
+        }}
+      >
+        <div className="modal-header bg-danger">
+          <h4 className="modal-title">{`Eliminar gasto`}</h4>
+        </div>
+        <ExpenseDeleteForm
+          expense={targetExpense as Expense}
+          onSubmit={() => {
+            setShowDeleteExpenseModal(!showDeleteExpenseModal)
+          }}
+        ></ExpenseDeleteForm>
+      </Modal>
       <Modal
         isOpen={showModalExpenseForm}
         onClosed={onClose}
@@ -124,6 +144,7 @@ export const Partnership = () => {
                           <th>Socio</th>
                           <th>Fecha</th>
                           <th>Pagado</th>
+                          <th></th>
                           <th>Monto</th>
                         </tr>
                       </thead>
@@ -160,6 +181,20 @@ export const Partnership = () => {
                                     currency: 'CLP'
                                   }
                                 )}`}
+                              </td>
+                              <td>
+                                <button
+                                  className="btn btn-sm bg-gradient-danger rounded-circle"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setTargetExpense(expense)
+                                    setShowDeleteExpenseModal(
+                                      !showDeleteExpenseModal
+                                    )
+                                  }}
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </button>
                               </td>
                               <td className="text-danger">
                                 {`${expense.amount.toLocaleString('en-cl', {
@@ -208,6 +243,7 @@ export const Partnership = () => {
                         <tr>
                           <th>Descripción</th>
                           <th>Fecha</th>
+                          <th></th>
                           <th>Total</th>
                         </tr>
                       </thead>
@@ -228,6 +264,20 @@ export const Partnership = () => {
                                 {expense.description}
                               </td>
                               <td>{expense.date}</td>
+                              <td>
+                                <button
+                                  className="btn btn-sm bg-gradient-danger rounded-circle"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setTargetExpense(expense)
+                                    setShowDeleteExpenseModal(
+                                      !showDeleteExpenseModal
+                                    )
+                                  }}
+                                >
+                                  <i className="fas fa-trash"></i>
+                                </button>
+                              </td>
                               <td className="text-danger">
                                 {`${expense.amount.toLocaleString('en-cl', {
                                   style: 'currency',

@@ -14,6 +14,7 @@ type ProjectContextInterface = {
   projectPartners: (project: Project) => (Partner | undefined)[]
   createFlow: (flow: Flow) => Promise<boolean>
   confirmFlow: (flow: Flow) => Promise<boolean>
+  deleteFlow: (flow: Flow) => Promise<boolean>
 }
 
 export const ProjectContext = createContext<ProjectContextInterface>(
@@ -58,6 +59,13 @@ const ProjectProvider: React.FC = ({ children }) => {
     result.error && addError(result.data, result.status)
     return result.success
   }
+  const deleteFlow = async (flow: Flow) => {
+    const result = await apiClient.delete(Endpoints.Flow, {
+      extraRoutes: [flow.id?.toString() as string]
+    })
+    result.error && addError(result.data, result.status)
+    return result.success
+  }
 
   const confirmFlow = async (flow: Flow) => {
     if (!flow.receipt_number) {
@@ -84,7 +92,8 @@ const ProjectProvider: React.FC = ({ children }) => {
         updateProject,
         projectPartners,
         createFlow,
-        confirmFlow
+        confirmFlow,
+        deleteFlow
       }}
     >
       {children}

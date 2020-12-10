@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Chart } from 'chart.js'
 import { ExpenseContext, ProjectContext } from '../../../providers'
 import { months } from '../../../constants'
-import { data } from 'jquery'
 
 interface Props {
   partner: Partner
@@ -37,7 +36,7 @@ export const PartnerCard: React.FC<Props> = ({
     const currentYear = new Date().getFullYear()
     const data = []
     const labels = []
-    for (let i = 5; i >= 0; i--) {
+    for (let i = 11; i >= 0; i--) {
       const month =
         currentMonth - i < 0 ? currentMonth - i + 13 : currentMonth - i + 1
       const year = currentMonth - i < 0 ? currentYear - 1 : currentYear
@@ -184,7 +183,7 @@ export const PartnerCard: React.FC<Props> = ({
         <div className="card-body">
           <div className="row justify-content-end">
             <h5>
-              <span className="mr-2">{`Total a pagar  `}</span>
+              <span className="mr-2">{`Ganancia mes anterior  `}</span>
               <span
                 className={
                   plotData[plotData.length - 2] > 0
