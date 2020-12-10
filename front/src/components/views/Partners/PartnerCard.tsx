@@ -19,6 +19,7 @@ export const PartnerCard: React.FC<Props> = ({
   const { projects } = useContext(ProjectContext)
   const { expenses } = useContext(ExpenseContext)
   const [plotData, setPlotData] = useState<number[]>([])
+  const [partnershipTotal, setPartnershipTotal] = useState(0)
 
   useEffect(() => {
     const init = async () => {
@@ -36,6 +37,45 @@ export const PartnerCard: React.FC<Props> = ({
     const currentYear = new Date().getFullYear()
     const data = []
     const labels = []
+
+    if (partnershipPartner) {
+      const utility = projects
+        .filter((project) =>
+          project.participants.some(
+            (partipation) => partipation.partner === partner.id
+          )
+        )
+        .reduce<number>((acc, project) => {
+          return (
+            acc +
+            ((project.flows
+              ? project.flows.reduce<number>((acc, flow) => {
+                  return (
+                    acc +
+                    (flow.amount > 0
+                      ? flow.amount
+                      : flow.confirmed
+                      ? flow.amount
+                      : 0)
+                  )
+                }, 0)
+              : 0) *
+              (project.participants.find((p) => p.partner === partner.id) as {
+                partner: number
+                participation: number
+              }).participation) /
+              100
+          )
+        }, 0)
+      const expense = expenses
+        .filter((exp) => {
+          return exp.partner === partner.id
+        })
+        .reduce<number>((acc, exp) => acc + exp.amount, 0)
+
+      setPartnershipTotal(utility - expense)
+    }
+
     for (let i = 11; i >= 0; i--) {
       const month =
         currentMonth - i < 0 ? currentMonth - i + 13 : currentMonth - i + 1
@@ -59,14 +99,6 @@ export const PartnerCard: React.FC<Props> = ({
                     )
                   })
                   .reduce<number>((acc, flow) => {
-                    console.log(flow)
-                    console.log(
-                      flow.amount > 0
-                        ? flow.amount
-                        : flow.confirmed
-                        ? flow.amount
-                        : 0
-                    )
                     return (
                       acc +
                       (flow.amount > 0
@@ -170,8 +202,29 @@ export const PartnerCard: React.FC<Props> = ({
           className="card-header"
           style={{ cursor: 'pointer', transition: 'all 1' }}
         >
-          <div className="card-title">
-            {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
+          <div className="row justify-content-between">
+            <div className="card-title">
+              {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
+            </div>
+            {partnershipPartner && (
+              <h5>
+                <span
+                  className={
+                    partnershipTotal > 0 ? 'text-success' : 'text-danger'
+                  }
+                >
+                  <i
+                    className={`mr-1 fa fa-arrow-${
+                      partnershipTotal > 0 ? 'up' : 'down'
+                    }`}
+                  ></i>
+                  {partnershipTotal.toLocaleString('en-cl', {
+                    style: 'currency',
+                    currency: 'CLP'
+                  })}
+                </span>
+              </h5>
+            )}
           </div>
         </div>
       </a>
