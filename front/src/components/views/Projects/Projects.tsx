@@ -7,6 +7,7 @@ import { FlowForm } from './FlowForm'
 import { PartnerContext } from '../../../providers'
 import { FlowConfirmForm } from './FlowConfirmForm'
 import { Collapse } from 'reactstrap'
+import { FlowDeleteForm } from './FlowDeleteForm'
 
 export const Projects = () => {
   const { projects, fetchProjects, confirmFlow } = useContext(ProjectContext)
@@ -14,6 +15,10 @@ export const Projects = () => {
   const [showModalProjectForm, setShowModalProjectForm] = useState(false)
   const [showModalFlowForm, setShowModalFlowForm] = useState(false)
   const [showModalFlowConfirmForm, setShowModaFlowConfirmForm] = useState(false)
+  const [
+    showModalFlowDeleteConfirmForm,
+    setShowModaDeleteFlowConfirmForm
+  ] = useState(false)
   const [targetProject, setTargetProject] = useState<Project>()
   const [targetFlow, setTargetFlow] = useState<Flow>()
   const [positiveFlow, setPositiveFlow] = useState<boolean>(true)
@@ -39,8 +44,32 @@ export const Projects = () => {
     setShowModaFlowConfirmForm(!showModalFlowConfirmForm)
   }
 
+  const toggleFlowDeleteConfirmModal = () => {
+    setShowModaDeleteFlowConfirmForm(!showModalFlowDeleteConfirmForm)
+  }
+
   return (
     <ContentWrapper>
+      <Modal
+        isOpen={showModalFlowDeleteConfirmForm}
+        onClosed={onClose}
+        backdrop={true}
+        toggle={() => {
+          setShowModaDeleteFlowConfirmForm(!showModalFlowDeleteConfirmForm)
+        }}
+      >
+        <div className="modal-header bg-danger">
+          <h4 className="modal-title">
+            {`Eliminar ${
+              (targetFlow?.amount as number) > 0 ? 'ingreso' : 'gasto'
+            }`}
+          </h4>
+        </div>
+        <FlowDeleteForm
+          flow={targetFlow as Flow}
+          onSubmit={toggleFlowDeleteConfirmModal}
+        ></FlowDeleteForm>
+      </Modal>
       <Modal
         isOpen={showModalProjectForm}
         onClosed={onClose}
@@ -262,6 +291,23 @@ export const Projects = () => {
                                               Confirmar
                                             </button>
                                           ))}
+                                      </td>
+                                      <td>
+                                        {(flow.amount > 0 ||
+                                          !flow.confirmed) && (
+                                          <button
+                                            className="btn btn-sm bg-gradient-danger rounded-circle"
+                                            onClick={() => {
+                                              setTargetFlow(flow)
+                                              toggleFlowDeleteConfirmModal()
+                                            }}
+                                          >
+                                            <i
+                                              className="fa fa-trash"
+                                              aria-hidden="true"
+                                            ></i>
+                                          </button>
+                                        )}
                                       </td>
                                       <td style={{ width: '15%' }}>
                                         {flow.amount > 0 ? (

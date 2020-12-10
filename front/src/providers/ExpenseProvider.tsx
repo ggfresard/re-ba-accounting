@@ -9,6 +9,7 @@ type ExpenseContextInterface = {
   fetchExpenses: () => Promise<boolean>
   createExpense: (expense: Expense) => Promise<boolean>
   updateExpense: (expense: Expense) => Promise<boolean>
+  deleteExpense: (expense: Expense) => Promise<boolean>
   expense: (id: number) => Expense | null
   monthExpenses: (date: string, variable: boolean) => Expense[]
 }
@@ -36,9 +37,16 @@ const ExpenseProvider: React.FC = ({ children }) => {
     return result.success
   }
   const updateExpense = async (expense: Expense) => {
-    console.log(expense)
     const result = await apiClient.patch(Endpoints.Expense, {
       body: expense,
+      extraRoutes: [expense.id ? expense.id.toString() : '']
+    })
+    result.error && addError(result.data, result.status)
+    return result.success
+  }
+
+  const deleteExpense = async (expense: Expense) => {
+    const result = await apiClient.delete(Endpoints.Expense, {
       extraRoutes: [expense.id ? expense.id.toString() : '']
     })
     result.error && addError(result.data, result.status)
@@ -68,7 +76,8 @@ const ExpenseProvider: React.FC = ({ children }) => {
         createExpense,
         updateExpense,
         expense,
-        monthExpenses
+        monthExpenses,
+        deleteExpense
       }}
     >
       {children}
