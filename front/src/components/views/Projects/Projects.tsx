@@ -266,6 +266,7 @@ export const Projects = () => {
                                       <td>{flow.date}</td>
                                       <td>
                                         {flow.amount < 0 &&
+                                          !!flow.partner &&
                                           `${
                                             partner(flow.partner as number)
                                               ?.name

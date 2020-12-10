@@ -95,10 +95,17 @@ export const PartnerCard: React.FC<Props> = ({
                     const flowDate = f.date.split('-')
                     return (
                       flowDate[0] === year.toString() &&
-                      flowDate[1] === month.toString()
+                      flowDate[1] === ('0' + month.toString()).slice(-2)
                     )
                   })
                   .reduce<number>((acc, flow) => {
+                    console.log(
+                      flow.amount > 0
+                        ? flow.amount
+                        : flow.confirmed
+                        ? flow.amount
+                        : 0
+                    )
                     return (
                       acc +
                       (flow.amount > 0
@@ -206,24 +213,23 @@ export const PartnerCard: React.FC<Props> = ({
             <div className="card-title">
               {`${partner.name ?? ''} ${partner.last_name ?? ''}`}
             </div>
-              <h5>
-                <span
-                  className={
-                    partnershipTotal > 0 ? 'text-success' : 'text-danger'
-                  }
-                >
-                  <i
-                    className={`mr-1 fa fa-arrow-${
-                      partnershipTotal > 0 ? 'up' : 'down'
-                    }`}
-                  ></i>
-                  {partnershipTotal.toLocaleString('en-cl', {
-                    style: 'currency',
-                    currency: 'CLP'
-                  })}
-                </span>
-              </h5>
-            
+            <h5>
+              <span
+                className={
+                  partnershipTotal > 0 ? 'text-success' : 'text-danger'
+                }
+              >
+                <i
+                  className={`mr-1 fa fa-arrow-${
+                    partnershipTotal > 0 ? 'up' : 'down'
+                  }`}
+                ></i>
+                {partnershipTotal.toLocaleString('en-cl', {
+                  style: 'currency',
+                  currency: 'CLP'
+                })}
+              </span>
+            </h5>
           </div>
         </div>
       </a>
