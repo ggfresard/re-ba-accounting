@@ -128,7 +128,7 @@ export const PartnerCard: React.FC<Props> = ({
           const expenseDate = exp.date.split('-')
           return (
             expenseDate[0] === year.toString() &&
-            expenseDate[1] === month.toString() &&
+            expenseDate[1] === ('0' + month.toString()).slice(-2) &&
             exp.partner === partner.id
           )
         })
