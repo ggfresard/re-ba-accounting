@@ -7,6 +7,11 @@ from .serializers import LoginSerializer, UserSerializer, RegisterSerializer
 
 
 class RegisterAPI(generics.GenericAPIView):
+
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]
+
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
@@ -18,6 +23,8 @@ class RegisterAPI(generics.GenericAPIView):
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
+
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
