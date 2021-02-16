@@ -20,7 +20,9 @@ export const PartnerCard: React.FC<Props> = ({
   const { expenses } = useContext(ExpenseContext)
   const [utilityPlotData, setUtilityPlotData] = useState<number[]>([])
   const [expensePlotData, setExpensePlotData] = useState<number[]>([])
+  const [lastMonthPay, setLastMonthPay] = useState<number>(0)
   const [partnershipTotal, setPartnershipTotal] = useState(0)
+  const [loans, setLoans] = useState<number[]>([])
 
   useEffect(() => {
     const init = async () => {
@@ -39,6 +41,7 @@ export const PartnerCard: React.FC<Props> = ({
     const expensesData = []
     const data = []
     const labels = []
+    const loanData = []
 
     const accUtility = projects
       .filter((project) =>
@@ -80,6 +83,7 @@ export const PartnerCard: React.FC<Props> = ({
       const month =
         currentMonth - i < 0 ? currentMonth - i + 13 : currentMonth - i + 1
       const year = currentMonth - i < 0 ? currentYear - 1 : currentYear
+      var loanCount = 0
       const utility = projects
         .filter((project) =>
           project.participants.some(
@@ -99,13 +103,9 @@ export const PartnerCard: React.FC<Props> = ({
                     )
                   })
                   .reduce<number>((acc, flow) => {
-                    console.log(
-                      flow.amount > 0
-                        ? flow.amount
-                        : flow.confirmed
-                        ? flow.amount
-                        : 0
-                    )
+                    if (flow.amount < 0 && flow.partner === partner.id)
+                      loanCount += flow.amount
+
                     return (
                       acc +
                       (flow.amount > 0
@@ -136,9 +136,11 @@ export const PartnerCard: React.FC<Props> = ({
       expensesData.push(expense)
       data.push(utility - expense)
       labels.push(months[month - 1])
+      loanData.push(-loanCount)
     }
     setUtilityPlotData(data)
     setExpensePlotData(expensesData)
+    setLoans(loanData)
     if (canvasContext) {
       new Chart(canvasContext, {
         type: 'line',
@@ -253,25 +255,29 @@ export const PartnerCard: React.FC<Props> = ({
               <span className="mr-2">{`Ganancia mes anterior  `}</span>
               <span
                 className={
-                  utilityPlotData[utilityPlotData.length - 2] > 0
+                  utilityPlotData[utilityPlotData.length - 2] +
+                    loans[utilityPlotData.length - 2] >
+                  0
                     ? 'text-success'
                     : 'text-danger'
                 }
               >
                 <i
                   className={`mr-1 fa fa-arrow-${
-                    utilityPlotData[utilityPlotData.length - 2] > 0
+                    utilityPlotData[utilityPlotData.length - 2] +
+                      loans[utilityPlotData.length - 2] >
+                    0
                       ? 'up'
                       : 'down'
                   }`}
                 ></i>
-                {utilityPlotData[utilityPlotData.length - 2].toLocaleString(
-                  'en-cl',
-                  {
-                    style: 'currency',
-                    currency: 'CLP'
-                  }
-                )}
+                {(
+                  utilityPlotData[utilityPlotData.length - 2] +
+                  loans[utilityPlotData.length - 2]
+                ).toLocaleString('en-cl', {
+                  style: 'currency',
+                  currency: 'CLP'
+                })}
               </span>
             </h5>
           </div>
