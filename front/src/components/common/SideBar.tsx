@@ -8,7 +8,7 @@ export const SideBar = () => {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <a href="#" className="brand-link text-center">
-        Re-Ba<span className="brand-text font-weight-light"> Accounting</span>
+        Deltaz<span className="brand-text font-weight-light"> Accounting</span>
       </a>
       <div className="sidebar">
         <nav className="mt-2">

@@ -27,7 +27,7 @@ export const Login = () => {
         <div className="card card-outline card-primary">
           <div className="card-header text-center">
             <a href="#" className="h1">
-              <b>Re-Ba</b> Accounting
+              <b>Deltaz</b> Accounting
             </a>
           </div>
           <div className="card-body">
